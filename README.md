@@ -50,6 +50,8 @@ All inputs to the notebook live in [`data/processed/`](data/processed/):
 
 The last two CSVs are pre-computed derivatives. They are generated from the original 1-minute Treasury-futures parquet (≈ 33 MB; excluded here to keep the repo light) and from the raw statement text files by these scripts in the source-of-truth repository: `scripts/build_figure4_csv.py`, `scripts/run_appendix_statement_features.py`, and `scripts/run_appendix_common_factor.py`. Anyone who wishes to reproduce the feature extraction from raw data may contact the author for the parquet and the 97 statement text files (Databento and FRED API keys also required for re-fetching).
 
+**Note on NLP pipelines:** the FinBERT sentiment scoring and DeBERTa zero-shot NLI ambiguity scoring run on the raw FOMC corpus (~5 MB of statements and transcripts) and require GPU acceleration for the DeBERTa step. They are not bundled in this replication package; their outputs (S_t, U_t) are provided in `master_dataset.csv` and `master_dataset_pressconf.csv`. The scoring pipeline can be made available on request. The NLI template, manual annotation rules, and validation metrics (κ = 0.618) are documented in Sections 5.2 and 5.3 of the thesis.
+
 ## Implementation notes
 
 - All regressions use HC1 robust standard errors (`statsmodels` default `cov_type="HC1"`), except where the thesis explicitly reports Newey-West, in which case `cov_type="HAC"` with `maxlags=1` (intraday) or `maxlags=4` (daily) is used, the lag asymmetry matches the original analysis scripts.
